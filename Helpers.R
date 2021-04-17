@@ -252,7 +252,7 @@ plot_results <- function(result_df, bi = F){
     p3 <- ggplot(result_df,aes(x=bias)) + geom_density(color="darkblue", fill="lightblue")
     show(p3)
     
-    fit.norm <- fitdist(result_df$differences, "norm")
+    fit.norm <- fitdist(result_df$differences, "norm", lower = c(0,0))
     plot(fit.norm)
     
     summary(fit.norm)
@@ -281,10 +281,10 @@ plot_results <- function(result_df, bi = F){
     p3 <- ggplot(result_df,aes(x=bias_2)) + geom_density(color="darkblue", fill="lightblue")
     show(p3)
     
-    fit.norm <- fitdist(result_df$differences_1, "norm")
+    fit.norm <- fitdist(result_df$differences_1, "norm", lower = c(0,0))
     plot(fit.norm)
     
-    fit.norm <- fitdist(result_df$differences_2, "norm")
+    fit.norm <- fitdist(result_df$differences_2, "norm", lower = c(0,0))
     plot(fit.norm)
     
     summary(fit.norm)

@@ -10,54 +10,56 @@ library(doParallel)
 
 source("Helpers.R")
 
+test_df1 <- uni_sim(100, c(500,500), c(90, 100), c(10, 10), 0.5, 10)
+test_df2 <- uni_sim(100, c(500,500), c(2, 2.5), c(0.5, 0.5), 0.5, 5, lognormal = T)
+test_df3 <- bi_sim(100, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.5)
 
 
-# mu_x <- 5
-# sd_x <- 5
-# 
-# mu <- log(mu_x^2/(sqrt(mu_x^2+sd_x^2)))
-# sd <- log(1+(sd_x^2/mu_x^2))
-# test_dist <- rlnorm(10000,mu,sd)
-# plot(density(test_dist))
+final_df <- rbind(test_df1,test_df2,test_df3)
+
+col_order <- colnames(final_df)
 
 
-
-
-#Univariate
-start_time <- Sys.time()
+#Univariate Normal Distribution
 result_df1 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 10), 0.5, 10)
 result_df2 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 10), 0.5, 5)
-result_df3 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 0.5, 10)
-result_df4 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 0.5, 5)
 result_df5 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 10), 1, 10)
 result_df6 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 10), 1, 5)
-result_df7 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 1, 10)
-result_df8 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 1, 5)
-end_time <- Sys.time()
-difftime(end_time,start_time)
-plot_results(bi_result_df5,T)
+result_df7 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 1, 10, add_x2 = T)
+result_df8 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 1, 5, add_x2 = T)
+result_df3 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 0.5, 10, add_x2 = T)
+result_df4 <- uni_sim(5000, c(500,500), c(90, 100), c(10, 20), 0.5, 5, add_x2 = T)
 
-temp_df <- result_df8
-
-mean(temp_df$original)
-mean(temp_df$rounded)
-mean(temp_df$bias)
-save(bi_result_df22, file="bi_result_df22.Rda")
-
-
+#Univariate Lognormal Distribution
+result_df13 <- uni_sim(5000, c(500,500), c(2, 2.5), c(0.5, 0.5), 0.5, 5, lognormal = T)
+result_df14 <- uni_sim(5000, c(500,500), c(2, 2.5), c(0.5, 0.5), 1, 5, lognormal = T)
+result_df15 <- uni_sim(5000, c(500,500), c(2, 2.5), c(0.5, 0.5), 0.5, 10, lognormal = T)
+result_df16 <- uni_sim(5000, c(500,500), c(2, 2.5), c(0.5, 0.5), 1, 10, lognormal = T)
 
 #Bivariate
 bi_result_df1 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.5)
 bi_result_df2 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, 0.5)
-bi_result_df3 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 10, 0.5)
-bi_result_df4 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 5, 0.5)
-bi_result_df5 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 10, 0.5)
-bi_result_df6 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 5, 0.5)
-bi_result_df7 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 10, 0.5)
-bi_result_df8 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 5, 0.5)
+bi_result_df19 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, -0.5)
+bi_result_df20 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, -0.5)
 
-bi_result_df11 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.25)
-bi_result_df12 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, 0.25)
+
+
+
+ 
+
+
+
+#Old Tests
+# bi_result_df3 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 10, 0.5)
+# bi_result_df4 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 5, 0.5)
+# bi_result_df5 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 10, 0.5)
+# bi_result_df6 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 5, 0.5)
+# bi_result_df7 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 10, 0.5)
+# bi_result_df8 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 5, 0.5)
+
+
+# bi_result_df11 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.25)
+# bi_result_df12 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, 0.25)
 # bi_result_df13 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 10, 0.25)
 # bi_result_df14 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 5, 0.25)
 # bi_result_df15 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 10, 0.25)
@@ -65,30 +67,12 @@ bi_result_df12 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5
 # bi_result_df17 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 10, 0.25)
 # bi_result_df18 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 5, 0.25)
 
-start_time <- Sys.time()
-bi_result_df21 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.75)
-end_time <- Sys.time()
-regular_time <- difftime(end_time,start_time)
 
-start_time <- Sys.time()
-bi_result_df22 <- parallel_bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, 0.75)
-end_time <- Sys.time()
-parallel_time <- difftime(end_time,start_time)
-
-# bi_result_df23 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 10, 0.75)
-# bi_result_df24 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 5, 0.75)
+# bi_result_df21 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 10, 0.75)
+# bi_result_df22 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 0.5, 5, 0.75)
+# bi_result_df23 <- parallel_bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 10, 0.75)
+# bi_result_df24 <- parallel_bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 0.5, 5, 0.75)
 # bi_result_df25 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 10, 0.75)
 # bi_result_df26 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 10), 1, 5, 0.75)
 # bi_result_df27 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 10, 0.75)
 # bi_result_df28 <- bi_sim(5000, c(500,500), c(90, 90, 100), c(10, 10, 20), 1, 5, 0.75)
-
-
-
-temp_df <- bi_result_df22
-
-mean(temp_df$original_1)
-mean(temp_df$rounded_1)
-mean(temp_df$bias_1)
-mean(temp_df$original_2)
-mean(temp_df$rounded_2)
-mean(temp_df$bias_2)

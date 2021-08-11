@@ -1,3 +1,6 @@
+# In this script multiple different plots are created
+#Requires results in "final_df" as produced by the "Simulation.R" scipt
+
 library(ggplot2)
 library(gridExtra)
 
@@ -95,7 +98,7 @@ for(s in sample(seq(1,1000), 1000)){
 }
 plot_df <- data.frame(x = c(log_rand, log_heaped, log_heaped2),
                       heap_perc = c(rep(0,1000),rep(50,1000), rep(100, 1000))) 
-#plot_df$heap_perc <- as.factor(plot_df$heap_perc)
+
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
   geom_histogram(alpha=0.8, fill = "white", color = "red") + 
@@ -110,11 +113,6 @@ p3 <- ggplot(plot_df[plot_df$heap_perc == 100,], aes(x=x)) +
   ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(0, 70, by = 5))
  
 grid.arrange(p1, p2, p3, ncol=3)
-
-
-
-
-
 
 
 log_heaped <- log_rand
@@ -140,7 +138,7 @@ for(s in sample(seq(1,1000), 1000)){
 }
 plot_df <- data.frame(x = c(log_rand, log_heaped, log_heaped2),
                       heap_perc = c(rep(0,1000),rep(50,1000), rep(100, 1000)))
-#plot_df$heap_perc <- as.factor(plot_df$heap_perc)
+
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
   geom_histogram(alpha=0, fill = "white", color = "red") + 
@@ -168,7 +166,7 @@ for(s in seq(1,1000)){
 }
 plot_df <- data.frame(x = c(norm_rand, norm_heaped, norm_heaped2),
                       heap_perc = c(rep(0,1000),rep(50,1000), rep(100, 1000)))
-#plot_df$heap_perc <- as.factor(plot_df$heap_perc)
+
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
   geom_histogram(alpha=0, fill = "white", color = "red") + 
@@ -196,7 +194,7 @@ for(s in seq(1,1000)){
 }
 plot_df <- data.frame(x = c(norm_rand, norm_heaped, norm_heaped2),
                       heap_perc = c(rep(0,1000),rep(50,1000), rep(100, 1000)))
-#plot_df$heap_perc <- as.factor(plot_df$heap_perc)
+
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
   geom_histogram(alpha=0.8, fill = "white", color = "red") + 

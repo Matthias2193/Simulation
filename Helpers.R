@@ -1,3 +1,5 @@
+#This script contains all the helper functions used for the simulation
+
 list.of.packages <- c("ggplot2", "fitdistrplus", "MASS", "foreach", "doParallel")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -12,7 +14,7 @@ uni_sim_helper <- function(n_0, n_1, m_0, m_1, sd_0, sd_1, heap_perc, round_mult
                            add_x2 = F){
   set.seed(x)
   x <- c(rnorm(n_1, mean = m_1, sd = sd_1), rnorm(n_0, mean = m_0, sd = sd_0))
-  #x <- c(rlnorm(n_1, meanlog = m_1, sdlog = sd_1), rlnorm(n_0, meanlog = m_0, sdlog = sd_0))
+  
   y <- c(rep(1,n_1),rep(0,n_0))
   
   if(add_x2){

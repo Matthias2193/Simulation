@@ -1,5 +1,4 @@
 #This script contains all the helper functions used for the simulation
-
 list.of.packages <- c("ggplot2", "fitdistrplus", "MASS", "foreach", "doParallel")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -28,7 +27,7 @@ uni_sim_helper <- function(n_0, n_1, m_0, m_1, sd_0, sd_1, heap_perc, round_mult
     original_1 <- model$coefficients[["x"]]
     original_2 <- model$coefficients[["x.2"]]
     
-    #Randomly round 50% of the x values to the nearest 10s
+    #Randomly round the given percentage of the x values according to the given rounding value
     for(s in sample(seq(1,(n_1 + n_0)),heap_perc * (n_1+n_0))){
       data[s,]["x"] <- round(data[s,]["x"]/round_mult)*round_mult
     }
@@ -55,7 +54,7 @@ uni_sim_helper <- function(n_0, n_1, m_0, m_1, sd_0, sd_1, heap_perc, round_mult
     #Save the coefficient
     original <- model$coefficients[["x"]]
     
-    #Randomly round 50% of the x values to the nearest 10s
+    #Randomly round the given percentage of the x values according to the given rounding value
     for(s in sample(seq(1,(n_1 + n_0)),heap_perc * (n_1+n_0))){
       data[s,]["x"] <- round(data[s,]["x"]/round_mult)*round_mult
     }
@@ -90,9 +89,15 @@ log_uni_sim_helper <- function(n_0, n_1, m_0, m_1, sd_0, sd_1, heap_perc, round_
     original_1 <- model$coefficients[["x"]]
     original_2 <- model$coefficients[["x.2"]]
     
-    #Randomly round 50% of the x values to the nearest 10s
+    #Randomly round the given percentage of the x values according to the given rounding value
     for(s in sample(seq(1,(n_1 + n_0)),heap_perc * (n_1+n_0))){
-      data[s,]["x"] <- round(data[s,]["x"]/round_mult)*round_mult
+      if(data[s,]["x"] >= 5/2){
+        if(data[s,]["x"] < 7.5){
+          data[s,]["x"] <- round(data[s,]["x"]/5)*5
+        } else{
+          data[s,]["x"] <- round(data[s,]["x"]/round_mult)*round_mult
+        }
+      }
     }
     
     data["x.2"] <- data["x"]^2
@@ -117,7 +122,7 @@ log_uni_sim_helper <- function(n_0, n_1, m_0, m_1, sd_0, sd_1, heap_perc, round_
     #Save the coefficient
     original <- model$coefficients[["log(x)"]]
     
-    #Randomly round 50% of the x values to the nearest 10s
+    #Randomly round the given percentage of the x values according to the given rounding value
     for(s in sample(seq(1,(n_1 + n_0)),heap_perc * (n_1+n_0))){
       if(data[s,]["x"] >= 5/2){
         if(data[s,]["x"] < 7.5){
@@ -158,7 +163,8 @@ bi_sim_helper <- function(n_0, n_1, m_0, m_1, m_2, sd_0, sd_1, sd_2, heap_perc, 
   #Save the coefficient
   original_1 <- model$coefficients[["X1"]]
   original_2 <- model$coefficients[["X2"]]
-  #Randomly round 50% of the x values to the nearest 10s
+  
+  #Randomly round the given percentage of the x values according to the given rounding value
   for(s in sample(seq(1,(n_1 + n_0)),heap_perc * (n_1+n_0))){
     data[s,]["X1"] <- round(data[s,]["X1"]/round_mult)*round_mult
   }
@@ -209,7 +215,6 @@ uni_sim <- function(n_rep, n_sample, mu, sd, heap_perc, round_mult, add_x2 = F, 
   } else{
     colnames(results_df) <- c("original_1", "rounded_1", "bias_1")
     results_df$differences_1 <- (results_df$original - results_df$rounded)
-    results_df$differences_1 <- (results_df$original - results_df$rounded)
     results_df$original_2 <- NA
     results_df$rounded_2 <- NA
     results_df$bias_2 <- NA
@@ -258,61 +263,4 @@ bi_sim <- function(n_rep, n_sample, mu, sd, heap_perc, round_mult, cor_value, re
   results_df$round_value <- round_mult
   results_df$cor_value <- cor_value
   return(results_df)
-}
-
-
-plot_results <- function(result_df, bi = F){
-  if(!bi){
-    plot_data <- data.frame("coefficient" = c(result_df$original,result_df$rounded),y = c(rep("original",nrow(result_df)),rep("rounded",nrow(result_df))))
-    plot_data$y <- as.factor(plot_data$y)
-    p1 <- ggplot(plot_data,aes(x=coefficient, fill=y)) + geom_density(alpha=0.25)
-    show(p1)
-    
-    t.test(result_df$original, result_df$rounded)
-    
-    
-    p2 <- ggplot(result_df,aes(x=differences)) + geom_density(color="darkblue", fill="lightblue")
-    show(p2)
-    
-    p3 <- ggplot(result_df,aes(x=bias)) + geom_density(color="darkblue", fill="lightblue")
-    show(p3)
-    
-    fit.norm <- fitdist(result_df$differences, "norm", lower = c(0,0))
-    plot(fit.norm)
-    
-    summary(fit.norm)
-  } else{
-    
-    plot_data <- data.frame("coefficient" = c(result_df$original_1,result_df$rounded_1),y = c(rep("original",nrow(result_df)),rep("rounded",nrow(result_df))))
-    plot_data$y <- as.factor(plot_data$y)
-    p1 <- ggplot(plot_data,aes(x=coefficient, fill=y)) + geom_density(alpha=0.25) + ggtitle("X1")
-    show(p1)
-    
-    plot_data <- data.frame("coefficient" = c(result_df$original_2,result_df$rounded_2),y = c(rep("original",nrow(result_df)),rep("rounded",nrow(result_df))))
-    plot_data$y <- as.factor(plot_data$y)
-    p1 <- ggplot(plot_data,aes(x=coefficient, fill=y)) + geom_density(alpha=0.25) + ggtitle("X2")
-    show(p1)
-    
-    
-    p2 <- ggplot(result_df,aes(x=differences_1)) + geom_density(color="darkblue", fill="lightblue")
-    show(p2)
-    
-    p2 <- ggplot(result_df,aes(x=differences_2)) + geom_density(color="darkblue", fill="lightblue")
-    show(p2)
-    
-    p3 <- ggplot(result_df,aes(x=bias_1)) + geom_density(color="darkblue", fill="lightblue")
-    show(p3)
-    
-    p3 <- ggplot(result_df,aes(x=bias_2)) + geom_density(color="darkblue", fill="lightblue")
-    show(p3)
-    
-    fit.norm <- fitdist(result_df$differences_1, "norm", lower = c(0,0))
-    plot(fit.norm)
-    
-    fit.norm <- fitdist(result_df$differences_2, "norm", lower = c(0,0))
-    plot(fit.norm)
-    
-    summary(fit.norm)
-  }
-  
 }

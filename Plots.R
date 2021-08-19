@@ -1,5 +1,5 @@
 # In this script multiple different plots are created
-#Requires results in "final_df" as produced by the "Simulation.R" scipt
+#Requires results in "final_df" as produced by the "Simulation.R" script
 
 library(ggplot2)
 library(gridExtra)
@@ -101,17 +101,28 @@ plot_df <- data.frame(x = c(log_rand, log_heaped, log_heaped2),
 
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill = "white", color = "red") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(0, 70, by = 5))
+  geom_histogram(alpha=0.8, fill = "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0), breaks = seq(0, 70, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,150)) +
+  theme(axis.text=element_text(size=24),
+       axis.title=element_text(size=30,face="bold"))
 
 p2 <- ggplot(plot_df[plot_df$heap_perc == 50,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill =  "white", color = "blue") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(0, 70, by = 5))
+  geom_histogram(alpha=0.8, fill =  "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0), breaks = seq(0, 70, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                     limits = c(0,300)) +
+  theme(axis.text=element_text(size=24),
+       axis.title=element_text(size=30,face="bold"))
 
 p3 <- ggplot(plot_df[plot_df$heap_perc == 100,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill = "white", color = "green") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(0, 70, by = 5))
- 
+  geom_histogram(alpha=0.8, fill = "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0), breaks = seq(0, 70, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,450)) +
+  theme(axis.text=element_text(size=24),
+        axis.title=element_text(size=30,face="bold"))
 grid.arrange(p1, p2, p3, ncol=3)
 
 
@@ -153,6 +164,8 @@ p3 <- ggplot(plot_df[plot_df$heap_perc == 100,], aes(x=x)) +
   ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(0, 70, by = 5))
 
 grid.arrange(p1, p2, p3, ncol=3)
+
+
 
 norm_rand <- c(rnorm(500, mean = 90, sd = 10), rnorm(500, mean = 100, sd = 10))
 norm_heaped <- norm_rand
@@ -197,16 +210,47 @@ plot_df <- data.frame(x = c(norm_rand, norm_heaped, norm_heaped2),
 
 
 p1 <- ggplot(plot_df[plot_df$heap_perc == 0,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill = "white", color = "red") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(60, 135, by = 5))
+  geom_histogram(alpha=0.8, fill = "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0),breaks = seq(60, 125, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,80)) +
+  theme(axis.text=element_text(size=24),
+        axis.title=element_text(size=30,face="bold"))
 
 p2 <- ggplot(plot_df[plot_df$heap_perc == 50,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill =  "white", color = "blue") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(60, 135, by = 5))
+  geom_histogram(alpha=0.8, fill =  "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0), breaks = seq(60, 125, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,120)) +
+  theme(axis.text=element_text(size=24),
+        axis.title=element_text(size=30,face="bold"))
 
 p3 <- ggplot(plot_df[plot_df$heap_perc == 100,], aes(x=x)) +  
-  geom_histogram(alpha=0.8, fill = "white", color = "green") + 
-  ggtitle("") + ylab("Count") + scale_x_continuous(breaks = seq(60, 135, by = 5))
+  geom_histogram(alpha=0.8, fill = "white", color = "black") + 
+  ggtitle("") + ylab("Count") + scale_x_continuous(expand = c(0,0), breaks = seq(60, 125, by = 10)) +
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,200)) +
+  theme(axis.text=element_text(size=24),
+        axis.title=element_text(size=30,face="bold"))
 
 
 grid.arrange(p1, p2, p3, ncol=3)
+
+
+age_data <- read.csv2("AgeDist.csv")
+age_data$Cases <- as.numeric(str_remove(age_data$Cases, "\\."))
+ages <- c()
+for (r in 1:nrow(age_data)) {
+  ages <- c(ages, rep(age_data$Age[r], age_data$Cases[r]))
+}
+
+ages_df <- data.frame(Age = ages)
+
+ggplot(data = ages_df) +
+  geom_bar(mapping = aes(x = Age)) + ylab("Cases") + xlab("Age") +
+  scale_x_continuous(breaks = seq(0, 73, by = 5)) + 
+  theme_classic() + scale_y_continuous(expand = c(0,0),
+                                       limits = c(0,3500)) +
+  theme(axis.text=element_text(size=24),
+        axis.title=element_text(size=30,face="bold")) 
+  
